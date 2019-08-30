@@ -108,10 +108,10 @@ app.post('/coords', function(request, response) {
 		"attachments": [
 			{
 				//"fallback": "Required plain-text summary of the attachment.",
-				//"color": "#36a64f",
+				"color": "#592C82",
 				//Yuna added the new line below
 				"pretext": "What is your guess? Send us your location and find out if it's the right guess!",
-				"title": "Upload your location",
+				"title": "Tap and Upload Your Location",
 				"title_link": host_app_url + "",
 				//"pretext": people.length + " people have joined. " + (decay_minutes - diffMins)+ " mins left before " + people[people.length -1].label + " [leader] drops out",
 				//"title": person.label + "'s location",
