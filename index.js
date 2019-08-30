@@ -109,13 +109,17 @@ app.post('/coords', function(request, response) {
 			{
 				"fallback": "Required plain-text summary of the attachment.",
 				"color": "#36a64f",
-				"pretext": people.length + " people have joined. " + (decay_minutes - diffMins)+ " mins left before " + people[people.length -1].label + " [leader] drops out",
-				"title": person.label + "'s location",
-				"title_link": "https://www.google.com/maps/place/" + latlng,
-				"image_url": "https://maps.googleapis.com/maps/api/staticmap?" +
+				//Yuna added the new line below
+				"pretext": "What is your guess? Send us your location and find out if it's the right guess",
+				"title": "Upload your location",
+				"title_link": host_app_url + "",
+				//"pretext": people.length + " people have joined. " + (decay_minutes - diffMins)+ " mins left before " + people[people.length -1].label + " [leader] drops out",
+				//"title": person.label + "'s location",
+				//"title_link": "https://www.google.com/maps/place/" + latlng,
+				/*"image_url": "https://maps.googleapis.com/maps/api/staticmap?" +
 							 "size=" + mapsize +
 							 "&maptype=" + maptype +
-							 markerParam,
+							 markerParam,*/
 				//"thumb_url": "http://example.com/path/to/thumb.png"
 				 "fields":[
 					{
