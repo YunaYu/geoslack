@@ -107,8 +107,8 @@ app.post('/coords', function(request, response) {
 	var attachment = {
 		"attachments": [
 			{
-				"fallback": "Required plain-text summary of the attachment.",
-				"color": "#36a64f",
+				//"fallback": "Required plain-text summary of the attachment.",
+				//"color": "#36a64f",
 				//Yuna added the new line below
 				"pretext": "What is your guess? Send us your location and find out if it's the right guess",
 				"title": "Upload your location",
