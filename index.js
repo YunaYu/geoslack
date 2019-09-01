@@ -31,7 +31,10 @@ app.get('/', function(request, response) {
 });
 
 app.get('/findme', function(request, response) {
-  response.render('pages/findme')
+  let channel = request.query.channel;
+  response.render('pages/findme', {
+		channel: channel
+	})
 });
 
 // When bot is called, reply with link to the app
@@ -44,97 +47,22 @@ var pplCtr = 0;
 
 // Called by front-end. Receives the coordinates from HTML5 geolocation
 app.post('/coords', function(request, response) {
-	const { user, lat, lng } = request.body;
+	const { channel, lat, lng } = request.body;
 	var latlng = lat + "," + lng;
 	var now = new Date();
 
-	// Check if user that clicked is already part of the session. We use localstorage to identify returning users
-	for (var i=0; i < people.length; i++) {
-		if (people[i].user === user)
-			break;
-	}
-
-	var person = {};
-	person["date_started"] = now;
-	person["latlng"] = latlng;
-
-	// ... if the user does not exist, create a new one
-	if(i >= people.length) {
-		person["user"]   = user;
-		person["label"]  = label[pplCtr];
-		person["color"]  = color[pplCtr % color.length];
-		pplCtr++;
-		people.push(person);
-	}
-	else {	// else, update the existing one
-		person = people[i];
-		person["date_started"] = now;
-		person["latlng"] = latlng;
-	}
-
-	// This builds the markers for the Google static map
-	var markerParam = "";
-
-	// Sort users, put the oldest at the end for pop()
-	people.sort(function(a, b){return b.date_started - a.date_started});
-
-	// DEBUG
-	//for(var i=0; i < people.length; i++) console.log(people[i].label + " - " + people[i].date_started);
-
-	var diffTime = null;
-	var diffMins = null;
-
-	// Kick (pop) users if they exceed the session time
-	do {
-		diffTime = now - people[people.length - 1].date_started;
-		diffMins = Math.round(((diffTime % 86400000) % 3600000) / 60000); // minutes
-		if(diffMins >= decay_minutes) {
-			people.pop(); // get new leader
-			pplCtr--;
-		}
-	} while(diffMins >= decay_minutes);
-
-	// DEBUG
-	//for(var i=0; i < people.length; i++) console.log(people[i].label + " - " + people[i].date_started);
-	//console.log(diffMins);
-
-	// Create markers/pin for each user on the map
-	people.forEach(function(entry) {
-	    markerParam += "&markers=color%3A" + entry.color + "%7Clabel%3A" + entry.label + "%7Cshadow%3Atrue%7C" + entry.latlng
-	});
-
-	// Construct the message to send to Slack using Incoming Webhooks Attachment format
+	// Construct the message to send to Api Gateway
 	var attachment = {
-		"attachments": [
-			{
-				//"fallback": "Required plain-text summary of the attachment.",
-				"color": "#592C82",
-				//Yuna added the new line below
-				"pretext": "What is your guess? Send us your location and find out if it's the right guess!",
-				"title": "Tap and Upload Your Location",
-				"title_link": host_app_url + "",
-				//"pretext": people.length + " people have joined. " + (decay_minutes - diffMins)+ " mins left before " + people[people.length -1].label + " [leader] drops out",
-				//"title": person.label + "'s location",
-				//"title_link": "https://www.google.com/maps/place/" + latlng,
-				/*"image_url": "https://maps.googleapis.com/maps/api/staticmap?" +
-							 "size=" + mapsize +
-							 "&maptype=" + maptype +
-							 markerParam,*/
-				//"thumb_url": "http://example.com/path/to/thumb.png"
-				 /*"fields":[
-					{
-					   "title": "Update your own location",
-					   "value": host_app_url + "",
-					   "short":false
-					}
-				 ]*/
-			}
-		]
-	}
+		"token": "kHAJJSYGpaAzlPWqrPggP3ax",
+		"event": {
+		  "text": "Location\n" + latlng,
+		  "channel": channel
+		}
+	  }
 
 	// Send message/attachment to Slack
-	var host = "hooks.slack.com";
-	var endpoint = slack_incoming_webhook_endpoint;
+	var host = "c2oy2yp8q2.execute-api.us-east-1.amazonaws.com";
+	var endpoint = "/Prod";
 	doRequest(host, endpoint, 'POST', attachment,
 		function(concurData) {
   			console.log(request.body.lat + " " + request.body.lng);
