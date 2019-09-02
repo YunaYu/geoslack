@@ -32,11 +32,8 @@ app.get('/', function(request, response) {
 
 app.get('/findme', function(request, response) {
   let channel = request.query.channel;
-  let location = request.query.location;
-  console.log(location);
   response.render('pages/findme', {
-		channel: channel,
-		location: location
+		channel: channel
 	})
 });
 
@@ -50,7 +47,7 @@ var pplCtr = 0;
 
 // Called by front-end. Receives the coordinates from HTML5 geolocation
 app.post('/coords', function(request, response) {
-	const { channel, lat, lng, location } = request.body;
+	const { channel, lat, lng } = request.body;
 	var latlng = lat + "," + lng;
 	var now = new Date();
 
@@ -58,7 +55,7 @@ app.post('/coords', function(request, response) {
 	var attachment = {
 		"token": "kHAJJSYGpaAzlPWqrPggP3ax",
 		"event": {
-		  "text": "Location\n" + latlng + "\n" + location,
+		  "text": "Location\n" + latlng,
 		  "channel": channel
 		}
 	  }
